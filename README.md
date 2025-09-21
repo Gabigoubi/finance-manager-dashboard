@@ -10,7 +10,7 @@ Este projeto está sendo construído para ser uma ferramenta de portfólio robus
 
 ## Tecnologias Utilizadas
 
-* **Linguagens:** HTML5, CSS3, JavaScript (ES6+)
+* **Linguagens:** HTML5, CSS3, JavaScript (ES6+).
 * **Ferramentas & Ecossistema:**
     * **Vite:** Servidor de desenvolvimento moderno para um fluxo de trabalho rápido.
     * **NPM:** Gerenciamento de pacotes e dependências.
