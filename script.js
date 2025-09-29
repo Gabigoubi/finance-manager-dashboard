@@ -1,101 +1,304 @@
 import { v4 as uuidv4 } from "uuid";
 
+/*=============================================
+=            1. SELETORES DO DOM              =
+=============================================*/
 const main = document.getElementById("main-html");
 const form = document.getElementById("form");
 const expenseNameInput = document.getElementById("expense-name");
 const expenseAmountInput = document.getElementById("amount");
 const categorySelect = document.getElementById("expense-category");
+const expenseListUl = document.getElementById("expense-list");
+const dateInput = document.getElementById("expense-date");
+const paymentMethodInput = document.getElementById("payment-method");
+const supplierInput = document.getElementById("supplier");
+const paragraph = document.createElement("p");
 
-const expensesSection = document.createElement("section");
-const expenseListUl = document.createElement("ul");
-expensesSection.appendChild(expenseListUl);
-main.appendChild(expensesSection);
-
+/*=============================================
+=     2. ESTADO E CONFIGURAÇÕES GLOBAIS       =
+=============================================*/
 let expenses = [];
+let editingExpenseId = null;
+let myPieChart = null;
+
+const selectOptions = [
+  "Food",
+  "Energy",
+  "Cleaning",
+  "Water",
+  "Maintenance",
+  "Rent",
+];
+
+const paymentMethods = ["Pix", "Debit Card", "Credit Card", "Cash"];
 
 const validationRules = {
   expenseName: {
     element: expenseNameInput,
     rule: () => expenseNameInput.value.length >= 3,
-    error: "Sua despesa precisa ter mais de 3 caracteres...",
+    error: "Your expense must be more than 3 characters...",
   },
   expenseAmount: {
     element: expenseAmountInput,
     rule: () =>
       expenseAmountInput.value > 0 && !expenseAmountInput.value.startsWith("0"),
-    error: "O valor precisa ser maior que 0...",
+    error: "The value must be greater than 0...",
   },
   category: {
     element: categorySelect,
     rule: () => categorySelect.value !== "",
-    error: "Selecione a categoria....",
+    error: "Select category...",
+  },
+  date: {
+    element: dateInput,
+    rule: () => dateInput.value !== "",
+    error: "Select date...",
+  },
+  paymentMethod: {
+    element: paymentMethodInput,
+    rule: () => paymentMethodInput.value !== "",
+    error: "Select payment method...",
+  },
+  supplier: {
+    element: supplierInput,
+    rule: () => supplierInput.value.length >= 3,
+    error: "Your supplier must be more than 3 characters...",
   },
 };
+const FMD_COLOR_PALETTE = [
+  "#7F0000", // vermelho sangue escuro
+  "#B22222", // vermelho fogo
+  "#E25822", // laranja queimado
+  "#FF7F50", // coral forte
+  "#8B4513", // marrom escuro
+  "#A0522D", // marrom médio
+  "#6A0DAD", // roxo púrpura profundo
+  "#4B0082", // índigo escuro
+];
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+/*=============================================
+=      3. FUNÇÕES (A CAIXA DE FERRAMENTAS)    =
+=============================================*/
+
+// --- Funções de Renderização (UI) ---
 
 function renderExpenses(expensesArray) {
   expenseListUl.innerHTML = "";
-  expensesArray.forEach(({ name, amount, category, id }) => {
-    const li = document.createElement("li");
-    const textSpan = document.createElement("span");
-    textSpan.textContent = `${name} - $${amount} - ${category}`;
+  expensesArray.forEach(
+    ({ name, amount, category, id, date, paymentMethod, supplier }) => {
+      const li = document.createElement("li");
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.setAttribute("data-id", id);
+      if (editingExpenseId === id) {
+        li.classList.add("editing");
 
-    li.appendChild(textSpan);
-    li.appendChild(deleteBtn);
-    expenseListUl.appendChild(li);
+        const inputName = document.createElement("input");
+        const inputAmount = document.createElement("input");
+        const inputCategory = document.createElement("select");
+        const editPaymentMethodSelect = document.createElement("select");
+        const editDateInput = document.createElement("input");
+        const editSupplierInput = document.createElement("input");
+        const saveBtn = document.createElement("button");
+        const cancelBtn = document.createElement("button");
+
+        selectOptions.forEach((option) => {
+          const optionElement = document.createElement("option");
+          optionElement.value = option;
+          optionElement.textContent = option;
+          inputCategory.appendChild(optionElement);
+        });
+
+        paymentMethods.forEach((method) => {
+          const optionElement = document.createElement("option");
+          optionElement.value = method;
+          optionElement.textContent = method;
+          editPaymentMethodSelect.appendChild(optionElement);
+        });
+
+        inputName.value = name;
+        inputAmount.value = amount;
+        inputCategory.value = category;
+        editDateInput.value = date;
+        editPaymentMethodSelect.value = paymentMethod;
+        editSupplierInput.value = supplier;
+
+        editDateInput.type = "date";
+        editSupplierInput.type = "text";
+        inputAmount.type = "number";
+
+        inputName.setAttribute("name", "edit-name");
+        inputAmount.setAttribute("name", "edit-amount");
+        inputCategory.setAttribute("name", "edit-category");
+        editDateInput.setAttribute("name", "edit-date");
+        editPaymentMethodSelect.setAttribute("name", "edit-payment-method");
+        editSupplierInput.setAttribute("name", "edit-supplier");
+
+        saveBtn.setAttribute("data-id", id);
+        cancelBtn.setAttribute("data-id", id);
+        saveBtn.classList.add("btn-save");
+        cancelBtn.classList.add("btn-cancel");
+        saveBtn.textContent = "Save";
+        cancelBtn.textContent = "Cancel";
+
+        li.appendChild(inputName);
+        li.appendChild(inputAmount);
+        li.appendChild(inputCategory);
+        li.appendChild(editDateInput);
+        li.appendChild(editPaymentMethodSelect);
+        li.appendChild(editSupplierInput);
+        li.appendChild(saveBtn);
+        li.appendChild(cancelBtn);
+      } else {
+        const textSpan = document.createElement("span");
+        textSpan.textContent = `${name} - ${formatCurrency(
+          amount
+        )} - ${category} - ${date} - ${paymentMethod} - ${supplier}`;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.setAttribute("data-id", id);
+        deleteBtn.classList.add("btn-delete");
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.setAttribute("data-id", id);
+        editBtn.classList.add("btn-edit");
+
+        li.appendChild(textSpan);
+        li.appendChild(deleteBtn);
+        li.appendChild(editBtn);
+      }
+      expenseListUl.appendChild(li);
+    }
+  );
+}
+
+function renderOrdLiDashboardPart() {
+  const olList = document.getElementById("descending-dashboard");
+  if (!olList) return;
+  olList.innerHTML = "";
+  const expensiveExpense = calcDescendingAmount(expenses);
+  expensiveExpense.forEach(
+    ({ name, amount, category, date, paymentMethod, supplier }) => {
+      const li = document.createElement("li");
+      const spanText = document.createElement("span");
+      spanText.textContent = `${name} - ${formatCurrency(
+        amount
+      )} - ${category} - ${date} - ${paymentMethod} - ${supplier}`;
+      li.appendChild(spanText);
+      olList.appendChild(li);
+    }
+  );
+}
+
+function renderPizzaDashboard() {
+  const totals = calculateTotalPerCategory(expenses);
+  const labels = Object.keys(totals);
+  const data = Object.values(totals);
+
+  const canvas = document.getElementById("pizza-dashboard");
+  if (!canvas) return;
+  if (myPieChart) {
+    myPieChart.destroy();
+  }
+  myPieChart = new Chart(canvas, {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Expenses by Category",
+          data: data,
+          backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
+          borderColor: "#1e1e1e",
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: "white",
+          },
+        },
+      },
+    },
   });
 }
+function renderBarChart() {
+  const descToAsceArray = calcDescendingAmount(expenses);
+
+  const labels = descToAsceArray.map((expense) => expense.name);
+
+  const data = descToAsceArray.map((expense) => expense.amount);
+}
+
+function renderInsightCards() {
+  const topExpense = getTopExpense(expenses);
+  const expenseCount = getTotalExpensesCount(expenses);
+  const topCategory = getTopCategory(calculateTotalPerCategory(expenses));
+  const expenseCountElement = document.getElementById("total-expense-count");
+  const topExpenseElement = document.getElementById("top-expense-name");
+  const topCategoryElement = document.getElementById("top-category-name");
+  expenseCountElement.textContent = expenseCount;
+  topExpenseElement.textContent = `${topExpense.name} - ${formatCurrency(
+    topExpense.amount
+  )}`;
+  topCategoryElement.textContent = topCategory;
+}
+// --- Funções de Cálculo (Motores) ---
+
+function calcDescendingAmount(originArray) {
+  const originArrayCopy = [...originArray];
+  const descToAsce = originArrayCopy.sort((a, b) => b.amount - a.amount);
+  return descToAsce;
+}
+
+function calculateTotalPerCategory(originArray) {
+  const totals = originArray.reduce((acc, currentExpense) => {
+    acc[currentExpense.category] =
+      (acc[currentExpense.category] || 0) + currentExpense.amount;
+    return acc;
+  }, {});
+  return totals;
+}
+
+function getTotalExpensesCount(expensesArray) {
+  return expensesArray.length;
+}
+
+function getTopExpense(expensesArray) {
+  if (expensesArray.length === 0) return null;
+  const ordenedArray = calcDescendingAmount(expensesArray);
+  return ordenedArray[0];
+}
+
+function getTopCategory(totalsObject) {
+  const entries = Object.entries(totalsObject);
+  if (entries.length === 0) return null;
+
+  let topCategoryName = "";
+  let highestAmount = -Infinity;
+
+  entries.forEach(([category, amount]) => {
+    if (amount > highestAmount) {
+      highestAmount = amount;
+      topCategoryName = category;
+    }
+  });
+  return topCategoryName;
+}
+
+// --- Funções Utilitárias (Helpers) ---
 
 function saveToLocalStorage(expensesArray) {
   const expensesJSON = JSON.stringify(expensesArray);
   localStorage.setItem("expenses", expensesJSON);
 }
 
-const savedExpensesJSON = localStorage.getItem("expenses");
-
-if (savedExpensesJSON !== null) {
-  expenses = JSON.parse(savedExpensesJSON);
-  renderExpenses(expenses);
-}
-const paragraph = document.createElement("p");
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  if (paragraph.parentElement) {
-    paragraph.remove();
-  }
-  let isFormStillValid = true;
-  const validationEntries = Object.values(validationRules);
-  for (const entry of validationEntries) {
-    const isRuleValid = entry.rule();
-    const inputElement = entry.element;
-    if (isRuleValid === false) {
-      inputElement.classList.add("input-error");
-      isFormStillValid = false;
-      paragraph.textContent = entry.error;
-      form.appendChild(paragraph);
-    }
-  }
-  if (isFormStillValid === false) {
-    return;
-  }
-  const newExpense = {
-    id: uuidv4(),
-    description: "",
-    name: expenseNameInput.value,
-    amount: Number(expenseAmountInput.value),
-    category: categorySelect.value,
-  };
-
-  expenses.push(newExpense);
-  renderExpenses(expenses);
-  saveToLocalStorage(expenses);
-
-  form.reset();
-  expenseNameInput.focus();
-});
 function handleValidationFeedback(ruleEntry) {
   const isValid = ruleEntry.rule();
   const element = ruleEntry.element;
@@ -105,25 +308,114 @@ function handleValidationFeedback(ruleEntry) {
     element.classList.remove("input-error");
   }
 }
-expenseNameInput.addEventListener("input", () => {
-  handleValidationFeedback(validationRules.expenseName);
+
+function updateUI() {
+  renderExpenses(expenses);
+  renderOrdLiDashboardPart();
+  renderPizzaDashboard();
+  renderInsightCards();
+}
+function formatCurrency(number) {
+  return currencyFormatter.format(number);
+}
+
+/*=============================================
+=            4. EVENT LISTENERS               =
+=============================================*/
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  let isFormStillValid = true;
+  Object.values(validationRules).forEach((entry) => {
+    if (!entry.rule()) {
+      isFormStillValid = false;
+      entry.element.classList.add("input-error");
+      paragraph.textContent = entry.error;
+      form.appendChild(paragraph);
+    } else {
+      entry.element.classList.remove("input-error");
+    }
+  });
+
+  if (!isFormStillValid) return;
+
+  const newExpense = {
+    id: uuidv4(),
+    name: expenseNameInput.value,
+    amount: Number(expenseAmountInput.value),
+    category: categorySelect.value,
+    date: dateInput.value,
+    paymentMethod: paymentMethodInput.value,
+    supplier: supplierInput.value,
+  };
+
+  expenses.push(newExpense);
+  saveToLocalStorage(expenses);
+  updateUI();
+
+  form.reset();
+  expenseNameInput.focus();
 });
 
-expenseAmountInput.addEventListener("input", () => {
-  handleValidationFeedback(validationRules.expenseAmount);
-});
-
-categorySelect.addEventListener("change", () => {
-  handleValidationFeedback(validationRules.category);
-});
 expenseListUl.addEventListener("click", (event) => {
-  if (event.target.matches("button")) {
-    const expenseId = event.target.dataset.id;
+  const target = event.target;
 
-    expenses = expenses.filter((expense) => {
-      return expense.id !== expenseId;
-    });
-    renderExpenses(expenses);
-    saveToLocalStorage(expenses);
+  if (target.classList.contains("btn-delete")) {
+    const expenseId = target.dataset.id;
+    expenses = expenses.filter((expense) => expense.id !== expenseId);
+    updateUI();
   }
+
+  if (target.classList.contains("btn-edit")) {
+    editingExpenseId = target.dataset.id;
+    updateUI();
+  }
+
+  if (target.classList.contains("btn-cancel")) {
+    editingExpenseId = null;
+    updateUI();
+  }
+
+  if (target.classList.contains("btn-save")) {
+    const expenseId = target.dataset.id;
+    const expenseToUpdate = expenses.find(
+      (expense) => expense.id === expenseId
+    );
+
+    const li = target.closest("li");
+    const name = li.querySelector('input[name="edit-name"]').value;
+    const amount = Number(li.querySelector('input[name="edit-amount"]').value);
+    const category = li.querySelector('select[name="edit-category"]').value;
+    const date = li.querySelector('input[name="edit-date"]').value;
+    const paymentMethod = li.querySelector(
+      'select[name="edit-payment-method"]'
+    ).value;
+    const supplier = li.querySelector('input[name="edit-supplier"]').value;
+
+    expenseToUpdate.name = name;
+    expenseToUpdate.amount = amount;
+    expenseToUpdate.category = category;
+    expenseToUpdate.date = date;
+    expenseToUpdate.paymentMethod = paymentMethod;
+    expenseToUpdate.supplier = supplier;
+
+    editingExpenseId = null;
+    updateUI();
+  }
+
+  saveToLocalStorage(expenses);
 });
+
+/*=============================================
+=            5. INICIALIZAÇÃO                 =
+=============================================*/
+function init() {
+  const savedExpensesJSON = localStorage.getItem("expenses");
+  if (savedExpensesJSON) {
+    expenses = JSON.parse(savedExpensesJSON);
+  }
+  updateUI();
+}
+
+init(); // Roda a aplicação pela primeira vez

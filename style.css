@@ -1,3 +1,113 @@
+/*=============================================
+=            FMD DESIGN SYSTEM (TOKENS)         =
+=============================================*/
+
+:root {
+  /* ------------------------------------------ */
+  /* --- PALETA DE CORES BASE (Matéria-Prima) --- */
+  /* ------------------------------------------ */
+  /* Aqui listamos as cores puras que você escolheu. */
+
+  --palette-dark-turquoise: #1bd7d8;
+  --palette-neon-green: #37ed10;
+  --palette-stratos: #00004c; /* Azul super escuro */
+  --palette-violent-violet: #310f5e; /* Roxo super escuro */
+  --palette-ghost-white: #f8f8ff;
+  --palette-sky-blue: #59e0ff;
+  --palette-black: #000000;
+
+  /* ------------------------------------------ */
+  /* --- CORES DE UI (Função e Propósito)   --- */
+  /* ------------------------------------------ */
+  /* Aqui damos um "cargo" para cada cor da paleta. */
+
+  /* Cor principal de fundo. Escolhi o Roxo por ser um pouco mais "orgânico". */
+  --color-background: var(--palette-violent-violet);
+
+  /* Cor principal para textos, garantindo contraste. */
+  --color-text-primary: var(--palette-ghost-white);
+  /* Cor para textos secundários, placeholders, etc. */
+  --color-text-secondary: rgba(
+    248,
+    248,
+    255,
+    0.7
+  ); /* Branco com transparência */
+
+  /* Cor de destaque para ações primárias (botões principais, links). */
+  --color-accent-primary: var(--palette-dark-turquoise);
+  /* Cor de destaque para ações secundárias ou status positivos. */
+  --color-accent-secondary: var(--palette-neon-green);
+
+  /* ------------------------------------------ */
+  /* --- CORES DE FEEDBACK (Semântica)      --- */
+  /* ------------------------------------------ */
+  /* Cores que comunicam estado ao usuário. */
+
+  /* Usado para erros, alertas de perigo (Ex: gastos muito altos). */
+  --color-feedback-error: #ff6384; /* Um vermelho/rosa neon */
+  /* Usado para sucesso, status positivo (Ex: gastos baixos). */
+  --color-feedback-success: var(--palette-neon-green);
+  /* Usado para avisos e informações. */
+  --color-feedback-warning: #ffce56; /* Um amarelo neon */
+
+  /* ------------------------------------------ */
+  /* --- BORDAS E SUPERFÍCIES                 --- */
+  /* ------------------------------------------ */
+
+  /* Cor sutil para bordas de cards e divisórias. */
+  --border-color: rgba(
+    89,
+    224,
+    255,
+    0.25
+  ); /* Azul céu com mais transparência */
+  --border-radius-standard: 8px;
+
+  /* Fundo para o efeito de "vidro fosco" (Glassmorphism). */
+  --surface-glass-background: rgba(
+    49,
+    15,
+    94,
+    0.3
+  ); /* Roxo com transparência */
+
+  /* ------------------------------------------ */
+  /* --- SOMBRAS E EFEITOS (Profundidade)     --- */
+  /* ------------------------------------------ */
+
+  /* Efeito de brilho (glow) para elementos de destaque. */
+  --effect-neon-glow-turquoise: 0 0 12px 1px hsla(180, 78%, 51%, 0.6);
+  --effect-neon-glow-green: 0 0 12px 1px hsla(111, 86%, 50%, 0.6);
+
+  /* Sombra padrão para "elevar" os cards da tela. */
+  --effect-box-shadow-standard: 0px 4px 16px rgba(0, 0, 0, 0.2);
+
+  /* Efeito de blur para o fundo de elementos "glass". */
+  --effect-backdrop-blur: blur(12px);
+
+  /* ------------------------------------------ */
+  /* --- ORDEM DAS CAMADAS (z-index)          --- */
+  /* ------------------------------------------ */
+  /* Um sistema para controlar a profundidade e evitar "z-index: 9999". */
+
+  --z-index-background-glow: -1; /* Nebulosas no fundo */
+  --z-index-base: 1; /* Conteúdo padrão */
+  --z-index-floating: 10; /* Elementos que flutuam (ex: tooltips) */
+  --z-index-modal: 100; /* Modais e pop-ups */
+}
+
+/* --- Lógica de Texto Preto/Branco (WCAG) --- */
+/* Esta parte não entra nas variáveis, mas é onde a gente aplicaria a lógica. */
+/* Por padrão, nosso fundo é escuro, então o texto principal é branco. */
+
+/* Se tivéssemos um componente com fundo claro (ex: um modal de alerta) */
+.componente-com-fundo-claro {
+  background-color: var(--palette-ghost-white);
+  color: var(
+    --palette-black
+  ); /* O texto vira preto pra garantir contraste AAA */
+}
 .input-error {
   outline: 2px solid red;
 }

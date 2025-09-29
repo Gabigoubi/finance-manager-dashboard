@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="Finance Management Dashboard is a software that aims to ensure that your financial decisions are based on concrete data."
     />
+
     <title>Finance Manager DashBoard</title>
-    <script src="script.js" type="module" defer></script>
+    <script src="script.js" type="module"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -39,15 +41,62 @@
             <option value="" selected disabled>
               Select the area of the amount spent
             </option>
-            <option value="food">Food</option>
-            <option value="energy">Energy</option>
-            <option value="cleaning">Cleaning</option>
-            <option value="water">Water</option>
-            <option value="maintenance">Maintenance</option>
-            <option value="rent">Rent</option>
+            <option value="Food">Food</option>
+            <option value="Energy">Energy</option>
+            <option value="Cleaning">Cleaning</option>
+            <option value="Water">Water</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Rent">Rent</option>
           </select>
+          <label for="expense-date">Date:</label>
+          <input type="date" id="expense-date" name="expenseDate" required />
+
+          <label for="payment-method">Payment Method:</label>
+          <select id="payment-method" name="paymentMethod" required>
+            <option value="" selected disabled>Select a payment method</option>
+            <option value="pix">Pix</option>
+            <option value="debit_card">Debit Card</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="cash">Cash</option>
+          </select>
+
+          <label for="supplier">Supplier:</label>
+          <input
+            type="text"
+            id="supplier"
+            name="supplier"
+            placeholder="e.g., Supermarket XYZ"
+            required
+          />
+
           <button id="btn-submit" type="submit">Send expenses</button>
         </form>
+      </section>
+      <section id="expenses-dashboard-container">
+        <h2>Minhas Despesas</h2>
+        <ul id="expense-list"></ul>
+      </section>
+      <section id="dashboard-container">
+        <section class="insight-container">
+          <article class="insight-card">
+            <h2>Total de Despesas</h2>
+            <p class="card-value" id="total-expense-count"></p>
+          </article>
+          <article class="insight-card">
+            <h2>Despesa Crítica</h2>
+            <p class="card-value" id="top-expense-name"></p>
+          </article>
+          <article class="insight-card">
+            <h2>Área Crítica</h2>
+            <p class="card-value" id="top-category-name"></p>
+          </article>
+        </section>
+        <article>
+          <ol id="descending-dashboard"></ol>
+        </article>
+        <article>
+          <canvas id="pizza-dashboard">
+        </article>
       </section>
     </main>
   </body>
