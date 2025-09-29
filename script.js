@@ -20,7 +20,7 @@ const paragraph = document.createElement("p");
 let expenses = [];
 let editingExpenseId = null;
 let myPieChart = null;
-
+let barChart = null;
 const selectOptions = [
   "Food",
   "Energy",
@@ -174,25 +174,6 @@ function renderExpenses(expensesArray) {
     }
   );
 }
-
-function renderOrdLiDashboardPart() {
-  const olList = document.getElementById("descending-dashboard");
-  if (!olList) return;
-  olList.innerHTML = "";
-  const expensiveExpense = calcDescendingAmount(expenses);
-  expensiveExpense.forEach(
-    ({ name, amount, category, date, paymentMethod, supplier }) => {
-      const li = document.createElement("li");
-      const spanText = document.createElement("span");
-      spanText.textContent = `${name} - ${formatCurrency(
-        amount
-      )} - ${category} - ${date} - ${paymentMethod} - ${supplier}`;
-      li.appendChild(spanText);
-      olList.appendChild(li);
-    }
-  );
-}
-
 function renderPizzaDashboard() {
   const totals = calculateTotalPerCategory(expenses);
   const labels = Object.keys(totals);
@@ -230,10 +211,37 @@ function renderPizzaDashboard() {
 }
 function renderBarChart() {
   const descToAsceArray = calcDescendingAmount(expenses);
-
   const labels = descToAsceArray.map((expense) => expense.name);
-
   const data = descToAsceArray.map((expense) => expense.amount);
+  const canvas = document.getElementById("bar-chart-dashboard");
+  if (!canvas) return;
+  if (barChart) {
+    barChart.destroy();
+  }
+  barChart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Descending Expenses",
+          data: data,
+          backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
+          borderColor: "#1e1e1e",
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: "white",
+          },
+        },
+      },
+    },
+  });
 }
 
 function renderInsightCards() {
@@ -311,8 +319,8 @@ function handleValidationFeedback(ruleEntry) {
 
 function updateUI() {
   renderExpenses(expenses);
-  renderOrdLiDashboardPart();
   renderPizzaDashboard();
+  renderBarChart();
   renderInsightCards();
 }
 function formatCurrency(number) {
