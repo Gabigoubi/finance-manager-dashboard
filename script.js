@@ -23,6 +23,7 @@ let myPieChart = null;
 let barChart = null;
 let supplierBarChart = null;
 let paymentMethodChart = null;
+let dateLineChart = null;
 const selectOptions = [
   "Food",
   "Energy",
@@ -316,6 +317,52 @@ function renderPaymentMethodDoughnutChart() {
   });
 }
 
+function renderDateLineChart() {
+  const totals = calculateTotalByDate(expenses);
+  const dates = generateDateRange(2025, 10);
+  const labels = dates.map((date) => {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    return `${day}/${month}`;
+  });
+
+  const data = dates.map((dateString) => {
+    const key = dateString.toISOString().slice(0, 10);
+
+    const value = totals[key] || 0;
+    return value;
+  });
+  const canvas = document.getElementById("date-line-chart");
+  if (!canvas) return;
+  if (dateLineChart) {
+    dateLineChart.destroy();
+  }
+  dateLineChart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Gastos ao longo do tempo",
+          data: data,
+          backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
+          borderColor: "#1e1e1e",
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: "white",
+          },
+        },
+      },
+    },
+  });
+}
+
 function renderInsightCards() {
   const topExpense = getTopExpense(expenses);
   const expenseCount = getTotalExpensesCount(expenses);
@@ -431,6 +478,7 @@ function updateUI() {
   renderBarChart();
   renderSupplierBarChart();
   renderPaymentMethodDoughnutChart();
+  renderDateLineChart();
   renderInsightCards();
 }
 function formatCurrency(number) {

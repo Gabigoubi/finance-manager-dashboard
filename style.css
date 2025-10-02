@@ -111,3 +111,9 @@
 .input-error {
   outline: 2px solid red;
 }
+.dashboard__charts {
+  display: flex;
+}
+.chart-container {
+  width: 20%;
+}
