@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 /*=============================================
 =            1. SELETORES DO DOM              =
 =============================================*/
-const main = document.querySelector("app-layout__main-content");
+const main = document.querySelector(".app-layout__main-content");
 const form = document.getElementById("form");
 const expenseNameInput = document.getElementById("expense-name");
 const expenseAmountInput = document.getElementById("amount");
@@ -69,15 +69,16 @@ const validationRules = {
   },
 };
 const FMD_COLOR_PALETTE = [
-  "#7F0000", // vermelho sangue escuro
-  "#B22222", // vermelho fogo
-  "#E25822", // laranja queimado
-  "#FF7F50", // coral forte
-  "#8B4513", // marrom escuro
-  "#A0522D", // marrom médio
-  "#6A0DAD", // roxo púrpura profundo
-  "#4B0082", // índigo escuro
+  "#0AFF99", // verde neon claro
+  "#00CC66", // verde vibrante
+  "#00994D", // verde médio
+  "#006633", // verde escuro profundo
+  "#004422", // verde quase preto
+  "#66FFAA", // verde neon suave
+  "#33CC77", // verde intenso
+  "#1A9966", // verde escuro suave
 ];
+
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
