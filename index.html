@@ -14,90 +14,171 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
-      <nav>
-        <ul>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-      </nav>
-    </header>
-    <main id="main-html">
-      <section class="form-container">
-        <form id="form">
-          <label for="expense-name">Expenses:</label>
-          <input
-            type="text"
-            id="expense-name"
-            name="expense-name"
-            placeholder="Please, enter your expense..."
-            required
-          />
-          <label for="amount">Amount:</label>
-          <input type="number" id="amount" name="amount" required />
-          <label for="expense-category">Category:</label>
-          <select id="expense-category" name="category">
-            <option value="" selected disabled>
-              Select the area of the amount spent
-            </option>
-            <option value="Food">Food</option>
-            <option value="Energy">Energy</option>
-            <option value="Cleaning">Cleaning</option>
-            <option value="Water">Water</option>
-            <option value="Maintenance">Maintenance</option>
-            <option value="Rent">Rent</option>
-          </select>
-          <label for="expense-date">Date:</label>
-          <input type="date" id="expense-date" name="expenseDate" required />
+    <div class="app-layout">
+      <nav class="app-layout__sidebar"></nav>
 
-          <label for="payment-method">Payment Method:</label>
-          <select id="payment-method" name="paymentMethod" required>
-            <option value="" selected disabled>Select a payment method</option>
-            <option value="pix">Pix</option>
-            <option value="debit_card">Debit Card</option>
-            <option value="credit_card">Credit Card</option>
-            <option value="cash">Cash</option>
-          </select>
+      <main class="app-layout__main-content"></main>
+    </div>
+    fiz as adições;
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+      <head>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="description"
+          content="Finance Management Dashboard is a software that aims to ensure that your financial decisions are based on concrete data."
+        />
 
-          <label for="supplier">Supplier:</label>
-          <input
-            type="text"
-            id="supplier"
-            name="supplier"
-            placeholder="e.g., Supermarket XYZ"
-            required
-          />
+        <title>Finance Manager DashBoard</title>
+        <script src="script.js" type="module"></script>
+        <link rel="stylesheet" href="style.css" />
+      </head>
+      <body>
+        <div class="app-layout">
+          <nav class="app-layout__sidebar"></nav>
+          <main class="app-layout__main-content">
+            <header class="page-header">
+              <h1 class="page-header__title">Painel de Gestão</h1>
+            </header>
+            <section class="expense-form-container">
+              <form id="form" class="expense-form">
+                <label for="expense-name" class="expense-form__label"
+                  >Expenses:</label
+                >
+                <input
+                  type="text"
+                  id="expense-name"
+                  class="expense-form__input"
+                  name="expense-name"
+                  placeholder="Please, enter your expense..."
+                  required
+                />
+                <label for="amount" class="expense-form__label">Amount:</label>
+                <input
+                  type="number"
+                  id="amount"
+                  class="expense-form__input"
+                  name="amount"
+                  required
+                />
+                <label for="expense-category" class="expense-form__label"
+                  >Category:</label
+                >
+                <select
+                  id="expense-category"
+                  class="expense-form__select"
+                  name="category"
+                >
+                  <option value="" selected disabled>
+                    Select the area of the amount spent
+                  </option>
+                  <option value="Food">Food</option>
+                  <option value="Energy">Energy</option>
+                  <option value="Cleaning">Cleaning</option>
+                  <option value="Water">Water</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Rent">Rent</option>
+                </select>
+                <label for="expense-date" class="expense-form__label"
+                  >Date:</label
+                >
+                <input
+                  type="date"
+                  id="expense-date"
+                  name="expenseDate"
+                  class="expense-form__input"
+                  required
+                />
 
-          <button id="btn-submit" type="submit">Send expenses</button>
-        </form>
-      </section>
-      <section id="expenses-dashboard-container">
-        <h2>Minhas Despesas</h2>
-        <ul id="expense-list"></ul>
-      </section>
-      <section id="dashboard-container">
-        <section class="insight-container">
-          <article class="insight-card">
-            <h2>Total de Despesas</h2>
-            <p class="card-value" id="total-expense-count"></p>
-          </article>
-          <article class="insight-card">
-            <h2>Despesa Crítica</h2>
-            <p class="card-value" id="top-expense-name"></p>
-          </article>
-          <article class="insight-card">
-            <h2>Área Crítica</h2>
-            <p class="card-value" id="top-category-name"></p>
-          </article>
-        </section>
-        <article>
-          <canvas id="bar-chart-dashboard">
-        </article>
-        <article>
-          <canvas id="pizza-dashboard">
-        </article>
-      </section>
-    </main>
+                <label for="payment-method" class="expense-form__label"
+                  >Payment Method:</label
+                >
+                <select
+                  id="payment-method"
+                  class="expense-form__select"
+                  name="paymentMethod"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Select a payment method
+                  </option>
+                  <option value="pix">Pix</option>
+                  <option value="debit_card">Debit Card</option>
+                  <option value="credit_card">Credit Card</option>
+                  <option value="cash">Cash</option>
+                </select>
+
+                <label for="supplier" class="expense-form__label"
+                  >Supplier:</label
+                >
+                <input
+                  type="text"
+                  id="supplier"
+                  class="expense-form__input"
+                  name="supplier"
+                  placeholder="e.g., Supermarket XYZ"
+                  required
+                />
+
+                <button id="btn-submit" type="submit" class="btn">
+                  Send expenses
+                </button>
+              </form>
+            </section>
+            <section class="expense-list">
+              <h2 class="expense-list__title">Minhas Despesas</h2>
+              <ul id="expense-list" class="expense-list__items"></ul>
+            </section>
+            <section class="dashboard">
+              <div class="dashboard__insights">
+                <article class="insight-card">
+                  <h2 class="insight-card__title">Total de Despesas</h2>
+                  <p class="insight-card__value" id="total-expense-count"></p>
+                </article>
+                <article class="insight-card">
+                  <h2 class="insight-card__title">Despesa Crítica</h2>
+                  <p class="insight-card__value" id="top-expense-name"></p>
+                </article>
+                <article class="insight-card">
+                  <h2 class="insight-card__title">Área Crítica</h2>
+                  <p class="insight-card__value" id="top-category-name"></p>
+                </article>
+              </div>
+
+              <div class="dashboard__charts">
+                <article class="chart-container">
+                  <h2 class="chart-container__title">Despesas por Categoria</h2>
+                  <canvas id="category-pie-chart"></canvas>
+                </article>
+
+                <article class="chart-container">
+                  <h2 class="chart-container__title">Top Despesas</h2>
+                  <canvas id="expense-bar-chart"></canvas>
+                </article>
+
+                <article class="chart-container">
+                  <h2 class="chart-container__title">Top Fornecedores</h2>
+                  <canvas id="supplier-bar-chart"></canvas>
+                </article>
+
+                <article class="chart-container">
+                  <h2 class="chart-container__title">Métodos de Pagamento</h2>
+                  <canvas id="payment-method-doughnut-chart"></canvas>
+                </article>
+
+                <article class="chart-container chart-container--full-width">
+                  <h2 class="chart-container__title">
+                    Gastos ao Longo do Tempo
+                  </h2>
+                  <canvas id="date-line-chart"></canvas>
+                </article>
+              </div>
+            </section>
+          </main>
+        </div>
+      </body>
+    </html>
   </body>
 </html>

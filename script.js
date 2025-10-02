@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 /*=============================================
 =            1. SELETORES DO DOM              =
 =============================================*/
-const main = document.getElementById("main-html");
+const main = document.querySelector("app-layout__main-content");
 const form = document.getElementById("form");
 const expenseNameInput = document.getElementById("expense-name");
 const expenseAmountInput = document.getElementById("amount");
@@ -21,6 +21,8 @@ let expenses = [];
 let editingExpenseId = null;
 let myPieChart = null;
 let barChart = null;
+let supplierBarChart = null;
+let paymentMethodChart = null;
 const selectOptions = [
   "Food",
   "Energy",
@@ -179,7 +181,7 @@ function renderPizzaDashboard() {
   const labels = Object.keys(totals);
   const data = Object.values(totals);
 
-  const canvas = document.getElementById("pizza-dashboard");
+  const canvas = document.getElementById("category-pie-chart");
   if (!canvas) return;
   if (myPieChart) {
     myPieChart.destroy();
@@ -213,7 +215,7 @@ function renderBarChart() {
   const descToAsceArray = calcDescendingAmount(expenses);
   const labels = descToAsceArray.map((expense) => expense.name);
   const data = descToAsceArray.map((expense) => expense.amount);
-  const canvas = document.getElementById("bar-chart-dashboard");
+  const canvas = document.getElementById("expense-bar-chart");
   if (!canvas) return;
   if (barChart) {
     barChart.destroy();
@@ -225,6 +227,76 @@ function renderBarChart() {
       datasets: [
         {
           label: "Descending Expenses",
+          data: data,
+          backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
+          borderColor: "#1e1e1e",
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: "white",
+          },
+        },
+      },
+    },
+  });
+}
+
+function renderSupplierBarChart() {
+  const totalSupplier = calcDescendingSupplier(expenses);
+  const labels = totalSupplier.map((supplierAmount) => supplierAmount[0]);
+  const data = totalSupplier.map((supplierData) => supplierData[1]);
+  const canvas = document.getElementById("supplier-bar-chart");
+  if (!canvas) return;
+  if (supplierBarChart) {
+    supplierBarChart.destroy();
+  }
+  supplierBarChart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Descending Suppliers",
+          data: data,
+          backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
+          borderColor: "#1e1e1e",
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: "white",
+          },
+        },
+      },
+    },
+  });
+}
+
+function renderPaymentMethodDoughnutChart() {
+  const totalPaymentMethod = calculateTotalPerPaymentMethod(expenses);
+  const labels = Object.keys(totalPaymentMethod);
+  const data = Object.values(totalPaymentMethod);
+  const canvas = document.getElementById("payment-method-doughnut-chart");
+  if (!canvas) return;
+  if (paymentMethodChart) {
+    paymentMethodChart.destroy();
+  }
+  paymentMethodChart = new Chart(canvas, {
+    type: "doughnut",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Formas de pagamentos mais utilizadas",
           data: data,
           backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
           borderColor: "#1e1e1e",
@@ -269,6 +341,42 @@ function calculateTotalPerCategory(originArray) {
   const totals = originArray.reduce((acc, currentExpense) => {
     acc[currentExpense.category] =
       (acc[currentExpense.category] || 0) + currentExpense.amount;
+    return acc;
+  }, {});
+  return totals;
+}
+
+function calculateTotalPerSupplier(originArray) {
+  const totals = originArray.reduce((acc, currentExpense) => {
+    acc[currentExpense.supplier] =
+      (acc[currentExpense.supplier] || 0) + currentExpense.amount;
+    return acc;
+  }, {});
+  return totals;
+}
+
+function calculateTotalPerPaymentMethod(originArray) {
+  const totals = originArray.reduce((acc, currentExpense) => {
+    acc[currentExpense.paymentMethod] =
+      (acc[currentExpense.paymentMethod] || 0) + currentExpense.amount;
+    return acc;
+  }, {});
+  return totals;
+}
+
+function calcDescendingSupplier(originArray) {
+  const originArrayCopy = [...originArray];
+  const supplierArray = Object.entries(
+    calculateTotalPerSupplier(originArrayCopy)
+  );
+  const descToAsce = supplierArray.sort((a, b) => b[1] - a[1]);
+  return descToAsce;
+}
+
+function calculateTotalByDate(originArray) {
+  const totals = originArray.reduce((acc, currentExpense) => {
+    acc[currentExpense.date] =
+      (acc[currentExpense.date] || 0) + currentExpense.amount;
     return acc;
   }, {});
   return totals;
@@ -321,10 +429,22 @@ function updateUI() {
   renderExpenses(expenses);
   renderPizzaDashboard();
   renderBarChart();
+  renderSupplierBarChart();
+  renderPaymentMethodDoughnutChart();
   renderInsightCards();
 }
 function formatCurrency(number) {
   return currencyFormatter.format(number);
+}
+
+function generateDateRange(year, month) {
+  let currentDate = new Date(year, month - 1, 1);
+  let dates = [];
+  while (currentDate.getMonth() === month - 1) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
 }
 
 /*=============================================
