@@ -16,8 +16,7 @@
   <body>
     <div class="app-layout">
       <nav class="app-layout__sidebar">
-          <h1 class="app-layout__sidebar__title">FMD</h1>
-
+          <h1 class="app-layout__sidebar-title">FMD</h1>
       </nav>
       <main class="app-layout__main-content">
         <header class="page-header">
@@ -25,6 +24,7 @@
         </header>
         <section class="expense-form-container">
           <form id="form" class="expense-form">
+              <div class="expense-form__field">
             <label for="expense-name" class="expense-form__label"
               >Expenses:</label
             >
@@ -36,6 +36,8 @@
               placeholder="Please, enter your expense..."
               required
             />
+              </div>
+              <div class="expense-form__field">
             <label for="amount" class="expense-form__label">Amount:</label>
             <input
               type="number"
@@ -44,6 +46,8 @@
               name="amount"
               required
             />
+              </div>
+              <div class="expense-form__field">
             <label for="expense-category" class="expense-form__label"
               >Category:</label
             >
@@ -52,6 +56,7 @@
               class="expense-form__select"
               name="category"
             >
+
               <option value="" selected disabled>
                 Select the area of the amount spent
               </option>
@@ -62,6 +67,8 @@
               <option value="Maintenance">Maintenance</option>
               <option value="Rent">Rent</option>
             </select>
+              </div>
+              <div class="expense-form__field">
             <label for="expense-date" class="expense-form__label">Date:</label>
             <input
               type="date"
@@ -70,7 +77,8 @@
               class="expense-form__input"
               required
             />
-
+              </div>
+              <div class="expense-form__field">
             <label for="payment-method" class="expense-form__label"
               >Payment Method:</label
             >
@@ -88,7 +96,8 @@
               <option value="Credit Card">Credit Card</option>
               <option value="Cash">Cash</option>
             </select>
-
+              </div>
+              <div class="expense-form__field">
             <label for="supplier" class="expense-form__label">Supplier:</label>
             <input
               type="text"
@@ -98,7 +107,7 @@
               placeholder="e.g., Supermarket XYZ"
               required
             />
-
+              </div>
             <button id="btn-submit" type="submit" class="btn">
               Send expenses
             </button>
