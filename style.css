@@ -21,7 +21,7 @@
 
     /* Cores de Ação (Destaque) */
     --accent-primary-green: #2ECC71;
-    --accent-secondary-blue: #3498DB;
+    --accent-secondary-blue: #56A9E1;
 }
 * {
     margin: 0;
@@ -81,6 +81,7 @@ h1, h2, h3 {
 }
 .chart-container--full-width {
     grid-column: 1 / -1;
+    height: 50vh;
 }
 
 /* ============================ 3. COMPONENTS ============================ */
@@ -105,10 +106,29 @@ h1, h2, h3 {
 }
 
 .expense-list {
-    margin: var(--spacing-4);
-    overflow-y: scroll;
-    border: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
+
+.expense-list__container {
+    margin: var(--spacing-4);
+    border: 1px solid var(--color-border);
+    max-width: 50%;
+}
+
+.expense-list__items {
+    overflow-y: scroll;
+    height: 10vh;
+    padding: var(--spacing-2);
+}
+
+.expense-list__special {
+    border: 1px solid var(--color-border);
+    padding: 5rem;
+    /* Aqui vai ser um titulo especial e vou colocar uma API que mostra a cotação das bolsas de valores */
+}
+
 .dashboard__insights {
     display: flex;
     justify-content: space-around;
@@ -122,7 +142,43 @@ h1, h2, h3 {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--color-border);
     border-radius: var(--spacing-2);
+    width: 30rem;
+    position: relative;
+    overflow: hidden;
 }
+
+.insight-card:hover::before {
+    background-size: 100% 2px;
+}
+
+.insight-card:hover::after {
+    background-size: 2px 100%;
+}
+
+
+.insight-card::before {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: "";
+    transition: background-size 0.3s ease-in;
+    background-image: linear-gradient(to right, var(--accent-primary-green), var(--accent-primary-green)), linear-gradient(to right, var(--accent-primary-green), var(--accent-primary-green));
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-origin: border-box;
+    background-size: 2px 0, 2px 0;
+}
+/*
+.insight-card::after {
+    position: absolute;
+    content: "";
+    transition: background-size 0.3s ease-in;
+    background-image: linear-gradient(to right, var(--accent-primary-green), var(--accent-primary-green)), linear-gradient(to right, var(--accent-primary-green), var(--accent-primary-green));
+    background-repeat: no-repeat;
+    background-position: top left, bottom right;
+    background-size: 2px 0;
+}
+*/
 .insight-card__title, .insight-card__value  {
     padding: var(--spacing-1);
 }
