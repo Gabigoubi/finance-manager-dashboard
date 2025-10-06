@@ -69,14 +69,12 @@ const validationRules = {
   },
 };
 const FMD_COLOR_PALETTE = [
-  "#0AFF99", // verde neon claro
-  "#00CC66", // verde vibrante
-  "#00994D", // verde médio
-  "#006633", // verde escuro profundo
-  "#004422", // verde quase preto
-  "#66FFAA", // verde neon suave
-  "#33CC77", // verde intenso
-  "#1A9966", // verde escuro suave
+    "#2ECC71", // verde principal
+    "#56A9E1", // azul secundário
+    "#0AFF99", // verde neon
+    "#5600FF", // magenta
+    "#35006C", // lavanda escuro
+    "#FF7F50",
 ];
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
