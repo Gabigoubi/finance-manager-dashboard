@@ -201,6 +201,9 @@ function renderPizzaDashboard() {
       ],
     },
     options: {
+        layout: {
+            padding: 20
+        },
       plugins: {
         legend: {
           labels: {
@@ -238,7 +241,7 @@ function renderBarChart() {
       plugins: {
         legend: {
           labels: {
-            color: "white",
+            color: "#fff",
           },
         },
       },
@@ -493,6 +496,7 @@ function generateDateRange(year, month) {
   }
   return dates;
 }
+
 
 /*=============================================
 =            4. EVENT LISTENERS               =
