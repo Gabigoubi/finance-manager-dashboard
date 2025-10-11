@@ -96,6 +96,8 @@ function renderExpenses(expensesArray) {
       if (editingExpenseId === id) {
         li.classList.add("editing");
 
+
+
         const inputName = document.createElement("input");
         const inputAmount = document.createElement("input");
         const inputCategory = document.createElement("select");
@@ -548,11 +550,13 @@ expenseListUl.addEventListener("click", (event) => {
 
   if (target.classList.contains("btn-edit")) {
     editingExpenseId = target.dataset.id;
+      document.body.classList.add("editing-active");
     updateUI();
   }
 
   if (target.classList.contains("btn-cancel")) {
     editingExpenseId = null;
+      document.body.classList.remove("editing-active"); // Remove a classe
     updateUI();
   }
 
@@ -580,6 +584,7 @@ expenseListUl.addEventListener("click", (event) => {
     expenseToUpdate.supplier = supplier;
 
     editingExpenseId = null;
+      document.body.classList.remove("editing-active");
     updateUI();
   }
 

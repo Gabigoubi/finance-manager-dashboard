@@ -23,8 +23,12 @@
             <h1 class="page-header__title">Painel de Gestão</h1>
         </header>
         <section class="expense-form-container">
-            <form id="form" class="expense-form">
+
+            <form id="form">
+                <fieldset class="expense-form">
+                    <legend>Cadastro de Despesas</legend>
                 <div class="expense-form__field">
+
                     <label for="expense-name" class="expense-form__label"
                     >Expenses:</label
                     >
@@ -96,6 +100,7 @@
                         <option value="Credit Card">Credit Card</option>
                         <option value="Cash">Cash</option>
                     </select>
+
                 </div>
                 <div class="expense-form__field">
                     <label for="supplier" class="expense-form__label">Supplier:</label>
@@ -111,6 +116,7 @@
                 <button id="btn-submit" type="submit" class="btn">
                     Send expenses
                 </button>
+                </fieldset>
             </form>
         </section>
         <section class="expense-list">
@@ -142,7 +148,7 @@
                 </div>
                 <div class="insight-card-wrapper">
                     <article class="insight-card">
-                        <h2 class="insight-card__title">Área Crítica</h2>
+                        <h3 class="insight-card__title">Área Crítica</h3>
                         <p class="insight-card__value" id="top-category-name"></p>
                     </article>
                 </div>
@@ -151,29 +157,34 @@
 
             <div class="dashboard__charts">
                 <article class="chart-container">
-                    <h2 class="chart-container__title">Despesas por Categoria</h2>
+                    <h3 class="chart-container__title">Despesas por Categoria</h3>
                     <canvas id="category-pie-chart"></canvas>
                 </article>
                 <article class="chart-container">
-                    <h2 class="chart-container__title">Métodos de Pagamento</h2>
+                    <h3 class="chart-container__title">Métodos de Pagamento</h3>
                     <canvas id="payment-method-doughnut-chart"></canvas>
                 </article>
                 <article class="chart-container chart-container--full-width">
-                    <h2 class="chart-container__title">Top Despesas</h2>
+                    <h3 class="chart-container__title">Top Despesas</h3>
                     <canvas id="expense-bar-chart"></canvas>
                 </article>
 
                 <article class="chart-container chart-container--full-width">
-                    <h2 class="chart-container__title">Top Fornecedores</h2>
+                    <h3 class="chart-container__title">Top Fornecedores</h3>
                     <canvas id="supplier-bar-chart"></canvas>
                 </article>
 
                 <article class="chart-container chart-container--full-width">
-                    <h2 class="chart-container__title">Gastos ao Longo do Tempo</h2>
+                    <h3 class="chart-container__title">Gastos ao Longo do Tempo</h3>
                     <canvas id="date-line-chart"></canvas>
                 </article>
             </div>
         </section>
+        <footer class="page-footer">
+            <p class="app-layout__footer-text">
+                &copy; 2024 - Desenvolvido por Gabriel de Abreu
+            </p>
+        </footer>
     </main>
 </div>
 
