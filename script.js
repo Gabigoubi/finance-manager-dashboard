@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
+import Chart from 'chart.js/auto';
 
 /*=============================================
 =            1. SELETORES DO DOM              =
 =============================================*/
-const main = document.querySelector("app-layout__main-content");
+const main = document.querySelector(".app-layout__main-content");
 const form = document.getElementById("form");
 const expenseNameInput = document.getElementById("expense-name");
 const expenseAmountInput = document.getElementById("amount");
@@ -23,6 +24,7 @@ let myPieChart = null;
 let barChart = null;
 let supplierBarChart = null;
 let paymentMethodChart = null;
+let dateLineChart = null;
 const selectOptions = [
   "Food",
   "Energy",
@@ -68,15 +70,14 @@ const validationRules = {
   },
 };
 const FMD_COLOR_PALETTE = [
-  "#7F0000", // vermelho sangue escuro
-  "#B22222", // vermelho fogo
-  "#E25822", // laranja queimado
-  "#FF7F50", // coral forte
-  "#8B4513", // marrom escuro
-  "#A0522D", // marrom médio
-  "#6A0DAD", // roxo púrpura profundo
-  "#4B0082", // índigo escuro
+    "#2ECC71", // verde principal
+    "#56A9E1", // azul secundário
+    "#0AFF99", // verde neon
+    "#5600FF", // magenta
+    "#35006C", // lavanda escuro
+    "#FF7F50",
 ];
+
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -95,6 +96,8 @@ function renderExpenses(expensesArray) {
 
       if (editingExpenseId === id) {
         li.classList.add("editing");
+
+
 
         const inputName = document.createElement("input");
         const inputAmount = document.createElement("input");
@@ -201,6 +204,9 @@ function renderPizzaDashboard() {
       ],
     },
     options: {
+        layout: {
+            padding: 20
+        },
       plugins: {
         legend: {
           labels: {
@@ -238,7 +244,7 @@ function renderBarChart() {
       plugins: {
         legend: {
           labels: {
-            color: "white",
+            color: "#fff",
           },
         },
       },
@@ -297,6 +303,52 @@ function renderPaymentMethodDoughnutChart() {
       datasets: [
         {
           label: "Formas de pagamentos mais utilizadas",
+          data: data,
+          backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
+          borderColor: "#1e1e1e",
+          hoverOffset: 10,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: "white",
+          },
+        },
+      },
+    },
+  });
+}
+
+function renderDateLineChart() {
+  const totals = calculateTotalByDate(expenses);
+  const dates = generateDateRange(2025, 10);
+  const labels = dates.map((date) => {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    return `${day}/${month}`;
+  });
+
+  const data = dates.map((dateString) => {
+    const key = dateString.toISOString().slice(0, 10);
+
+    const value = totals[key] || 0;
+    return value;
+  });
+  const canvas = document.getElementById("date-line-chart");
+  if (!canvas) return;
+  if (dateLineChart) {
+    dateLineChart.destroy();
+  }
+  dateLineChart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Gastos ao longo do tempo",
           data: data,
           backgroundColor: FMD_COLOR_PALETTE, // PREENCHER COM A PALETA DE CORES
           borderColor: "#1e1e1e",
@@ -431,6 +483,7 @@ function updateUI() {
   renderBarChart();
   renderSupplierBarChart();
   renderPaymentMethodDoughnutChart();
+  renderDateLineChart();
   renderInsightCards();
 }
 function formatCurrency(number) {
@@ -446,6 +499,7 @@ function generateDateRange(year, month) {
   }
   return dates;
 }
+
 
 /*=============================================
 =            4. EVENT LISTENERS               =
@@ -497,11 +551,13 @@ expenseListUl.addEventListener("click", (event) => {
 
   if (target.classList.contains("btn-edit")) {
     editingExpenseId = target.dataset.id;
+      document.body.classList.add("editing-active");
     updateUI();
   }
 
   if (target.classList.contains("btn-cancel")) {
     editingExpenseId = null;
+      document.body.classList.remove("editing-active"); // Remove a classe
     updateUI();
   }
 
@@ -529,6 +585,7 @@ expenseListUl.addEventListener("click", (event) => {
     expenseToUpdate.supplier = supplier;
 
     editingExpenseId = null;
+      document.body.classList.remove("editing-active");
     updateUI();
   }
 
