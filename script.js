@@ -1,6 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-import Chart from 'chart.js/auto';
-
 /*=============================================
 =            1. SELETORES DO DOM              =
 =============================================*/
