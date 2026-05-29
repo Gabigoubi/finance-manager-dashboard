@@ -21,14 +21,6 @@ Antes de pular direto para um framework (como React ou Vue), este projeto foi co
 
 ---
 
-## 📸 Demonstração Visual
-
-> 💡 *Dica: Insira um print ou GIF do seu painel cyberpunk brilhando aqui!*
-
-<p align="center">
-  <img src="https://via.placeholder.com/800x450.png?text=Adicione+um+print+do+seu+Dashboard+aqui" alt="FMD Preview" width="100%">
-</p>
-
 ---
 
 ## ✨ Funcionalidades de BI & UX
